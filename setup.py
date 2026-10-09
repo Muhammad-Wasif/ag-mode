@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="ag-mode-manager",
-    version="1.0.1",
+    version="2.1.3",
     description="Cross-Platform AntiGravity Mode, Rules, Knowledge & Quality-Control System",
     author="Muhammad Wasif",
     packages=find_packages(where="src"),

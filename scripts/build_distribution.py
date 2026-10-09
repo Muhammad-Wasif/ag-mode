@@ -2,14 +2,14 @@
 
 Builds standalone, self-extracting single-file installers:
 1. Windows:
-   - dist/AG-Mode-Manager-Setup.bat (Double-clickable standalone batch file with embedded payload)
-   - dist/AG-Mode-Manager-Setup.ps1 (Standalone PowerShell script with embedded payload)
+   - dist/installer-ag-mode-2.1.3-windows.bat (Double-clickable standalone batch file with embedded payload)
+   - dist/installer-ag-mode-2.1.3-windows.ps1 (Standalone PowerShell script with embedded payload)
 2. macOS:
-   - dist/ag-mode-manager-setup-macos.sh (Terminal shell script with embedded payload)
-   - dist/AG-Mode-Manager-Setup-macOS.command (Double-clickable Finder command)
+   - dist/installer-ag-mode-2.1.3-macos.sh (Terminal shell script with embedded payload)
+   - dist/installer-ag-mode-2.1.3-macos.command (Double-clickable Finder command)
 3. Linux:
-   - dist/ag-mode-manager-setup-linux.sh (Self-extracting bash installer)
-   - dist/ag-mode-manager-linux.tar.gz (Portable tarball with install.sh)
+   - dist/installer-ag-mode-2.1.3-linux.sh (Self-extracting bash installer)
+   - dist/installer-ag-mode-2.1.3-linux.tar.gz (Portable tarball with install.sh)
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ def build_windows_setup_bat(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    bat_path = DIST_DIR / "AG-Mode-Manager-Setup.bat"
+    bat_path = DIST_DIR / "installer-ag-mode-2.1.3-windows.bat"
     
     script_header = """@echo off
 setlocal enabledelayedexpansion
@@ -179,7 +179,7 @@ def build_windows_setup_ps1(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    ps1_path = DIST_DIR / "AG-Mode-Manager-Setup.ps1"
+    ps1_path = DIST_DIR / "installer-ag-mode-2.1.3-windows.ps1"
     
     header = """# AG Mode Manager Setup - PowerShell Edition
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -281,7 +281,7 @@ def build_linux_setup_sh(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    sh_path = DIST_DIR / "ag-mode-manager-setup-linux.sh"
+    sh_path = DIST_DIR / "installer-ag-mode-2.1.3-linux.sh"
 
     script = """#!/usr/bin/env bash
 # AG Mode Manager - Standalone Linux Installer
@@ -381,7 +381,7 @@ exit 0
 
 
 def build_linux_tarball() -> None:
-    tar_path = DIST_DIR / "ag-mode-manager-linux.tar.gz"
+    tar_path = DIST_DIR / "installer-ag-mode-2.1.3-linux.tar.gz"
     install_script = """#!/usr/bin/env bash
 set -e
 INSTALL_DIR="$HOME/.ag-mode-manager"
@@ -451,7 +451,7 @@ def build_macos_setup_sh(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    sh_path = DIST_DIR / "ag-mode-manager-setup-macos.sh"
+    sh_path = DIST_DIR / "installer-ag-mode-2.1.3-macos.sh"
 
     script = """#!/usr/bin/env bash
 # AG Mode Manager - Standalone macOS Installer
@@ -541,7 +541,7 @@ exit 0
     print(f"Built macOS shell installer: {sh_path} ({sh_path.stat().st_size // 1024} KB)")
 
     # Also build the double-clickable .command file version for macOS Finder
-    cmd_path = DIST_DIR / "AG-Mode-Manager-Setup-macOS.command"
+    cmd_path = DIST_DIR / "installer-ag-mode-2.1.3-macos.command"
     shutil.copy(sh_path, cmd_path)
     print(f"Built macOS Finder .command installer: {cmd_path} ({cmd_path.stat().st_size // 1024} KB)")
 

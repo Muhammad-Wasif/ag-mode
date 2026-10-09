@@ -22,7 +22,7 @@ import tarfile
 import zipfile
 from pathlib import Path
 
-REPO_ROOT = Path("C:/Users/Admin/Desktop/ag-mode-manager")
+REPO_ROOT = Path(__file__).parent.parent.resolve()
 DIST_DIR = REPO_ROOT / "dist"
 DIST_DIR.mkdir(parents=True, exist_ok=True)
 

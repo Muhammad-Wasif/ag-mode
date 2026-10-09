@@ -2,14 +2,14 @@
 
 Builds standalone, self-extracting single-file installers:
 1. Windows:
-   - dist/installer-ag-mode-2.1.4-windows.bat (Double-clickable standalone batch file with embedded payload)
-   - dist/installer-ag-mode-2.1.4-windows.ps1 (Standalone PowerShell script with embedded payload)
+   - dist/installer-ag-mode-2.1.5-windows.bat (Double-clickable standalone batch file with embedded payload)
+   - dist/installer-ag-mode-2.1.5-windows.ps1 (Standalone PowerShell script with embedded payload)
 2. macOS:
-   - dist/installer-ag-mode-2.1.4-macos.sh (Terminal shell script with embedded payload)
-   - dist/installer-ag-mode-2.1.4-macos.command (Double-clickable Finder command)
+   - dist/installer-ag-mode-2.1.5-macos.sh (Terminal shell script with embedded payload)
+   - dist/installer-ag-mode-2.1.5-macos.command (Double-clickable Finder command)
 3. Linux:
-   - dist/installer-ag-mode-2.1.4-linux.sh (Self-extracting bash installer)
-   - dist/installer-ag-mode-2.1.4-linux.tar.gz (Portable tarball with install.sh)
+   - dist/installer-ag-mode-2.1.5-linux.sh (Self-extracting bash installer)
+   - dist/installer-ag-mode-2.1.5-linux.tar.gz (Portable tarball with install.sh)
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ def build_windows_setup_bat(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    bat_path = DIST_DIR / "installer-ag-mode-2.1.4-windows.bat"
+    bat_path = DIST_DIR / "installer-ag-mode-2.1.5-windows.bat"
     
     script_header = """@echo off
 setlocal enabledelayedexpansion
@@ -87,11 +87,11 @@ if not exist "%BIN_DIR%" mkdir "%BIN_DIR%"
 :: 1. Check Python
 set "PYTHON_EXE=python"
 python -c "pass" >nul 2>nul
-if %ERRORLEVEL% neq 0 (
+if errorlevel 1 (
     echo [INFO] Python 3 not found globally. Attempting to download local Python runtime...
     if not exist "%PYTHON_DIR%" mkdir "%PYTHON_DIR%"
     powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Write-Host 'Downloading Python...'; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip' -OutFile '%TEMP%\\py.zip' -UseBasicParsing; Write-Host 'Extracting...'; Expand-Archive -Path '%TEMP%\\py.zip' -DestinationPath '%PYTHON_DIR%' -Force; Remove-Item '%TEMP%\\py.zip' -Force; Write-Host 'Python downloaded.' } catch { Write-Host '[ERROR] Internet issue or download failed: ' $_.Exception.Message; exit 1 }"
-    if %ERRORLEVEL% neq 0 (
+    if errorlevel 1 (
         echo [ERROR] Installation failed due to internet or download issue.
         pause
         exit /b 1
@@ -108,7 +108,7 @@ if %ERRORLEVEL% neq 0 (
 
 echo [1/5] Extracting embedded application files...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$marker = '::' + ' ' + '---AG_PAYLOAD_BEGIN---'; $all = [IO.File]::ReadAllText('%~f0'); $idx = $all.IndexOf($marker); if ($idx -lt 0) { exit 1 }; $b64 = $all.Substring($idx + $marker.Length).Trim(); $bytes = [Convert]::FromBase64String($b64); $zip = [IO.Path]::Combine($env:TEMP, 'ag_setup.zip'); [IO.File]::WriteAllBytes($zip, $bytes); Expand-Archive -Path $zip -DestinationPath '%INSTALL_DIR%' -Force; Remove-Item $zip -Force"
-if %ERRORLEVEL% neq 0 (
+if errorlevel 1 (
     echo [ERROR] Failed to extract application archive.
     pause
     exit /b 1
@@ -179,7 +179,7 @@ def build_windows_setup_ps1(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    ps1_path = DIST_DIR / "installer-ag-mode-2.1.4-windows.ps1"
+    ps1_path = DIST_DIR / "installer-ag-mode-2.1.5-windows.ps1"
     
     header = """# AG Mode Manager Setup - PowerShell Edition
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -281,7 +281,7 @@ def build_linux_setup_sh(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    sh_path = DIST_DIR / "installer-ag-mode-2.1.4-linux.sh"
+    sh_path = DIST_DIR / "installer-ag-mode-2.1.5-linux.sh"
 
     script = """#!/usr/bin/env bash
 # AG Mode Manager - Standalone Linux Installer
@@ -381,7 +381,7 @@ exit 0
 
 
 def build_linux_tarball() -> None:
-    tar_path = DIST_DIR / "installer-ag-mode-2.1.4-linux.tar.gz"
+    tar_path = DIST_DIR / "installer-ag-mode-2.1.5-linux.tar.gz"
     install_script = """#!/usr/bin/env bash
 set -e
 INSTALL_DIR="$HOME/.ag-mode-manager"
@@ -451,7 +451,7 @@ def build_macos_setup_sh(zip_bytes: bytes) -> None:
     b64_data = base64.b64encode(zip_bytes).decode("ascii")
     b64_lines = [b64_data[i:i+76] for i in range(0, len(b64_data), 76)]
 
-    sh_path = DIST_DIR / "installer-ag-mode-2.1.4-macos.sh"
+    sh_path = DIST_DIR / "installer-ag-mode-2.1.5-macos.sh"
 
     script = """#!/usr/bin/env bash
 # AG Mode Manager - Standalone macOS Installer
@@ -541,7 +541,7 @@ exit 0
     print(f"Built macOS shell installer: {sh_path} ({sh_path.stat().st_size // 1024} KB)")
 
     # Also build the double-clickable .command file version for macOS Finder
-    cmd_path = DIST_DIR / "installer-ag-mode-2.1.4-macos.command"
+    cmd_path = DIST_DIR / "installer-ag-mode-2.1.5-macos.command"
     shutil.copy(sh_path, cmd_path)
     print(f"Built macOS Finder .command installer: {cmd_path} ({cmd_path.stat().st_size // 1024} KB)")
 

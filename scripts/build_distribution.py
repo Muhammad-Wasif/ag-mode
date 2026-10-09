@@ -76,21 +76,35 @@ echo.
 echo Installing AG Mode Manager for AntiGravity...
 echo.
 
-:: 1. Check Python
-where python >nul 2>nul
-if %ERRORLEVEL% neq 0 (
-    echo [ERROR] Python 3.10+ was not found in your system PATH.
-    echo Please install Python from https://www.python.org/ or Microsoft Store.
-    pause
-    exit /b 1
-)
-
 :: 2. Prepare destination in %USERPROFILE%\\.ag-mode-manager
 set "INSTALL_DIR=%USERPROFILE%\\.ag-mode-manager"
 set "BIN_DIR=%INSTALL_DIR%\\bin"
+set "PYTHON_DIR=%INSTALL_DIR%\\python"
 
 if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
 if not exist "%BIN_DIR%" mkdir "%BIN_DIR%"
+
+:: 1. Check Python
+set "PYTHON_EXE=python"
+where python >nul 2>nul
+if %ERRORLEVEL% neq 0 (
+    echo [INFO] Python 3 not found globally. Attempting to download local Python runtime...
+    if not exist "%PYTHON_DIR%" mkdir "%PYTHON_DIR%"
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Write-Host 'Downloading Python...'; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip' -OutFile '%TEMP%\\py.zip' -UseBasicParsing; Write-Host 'Extracting...'; Expand-Archive -Path '%TEMP%\\py.zip' -DestinationPath '%PYTHON_DIR%' -Force; Remove-Item '%TEMP%\\py.zip' -Force; Write-Host 'Python downloaded.' } catch { Write-Host '[ERROR] Internet issue or download failed: ' $_.Exception.Message; exit 1 }"
+    if %ERRORLEVEL% neq 0 (
+        echo [ERROR] Installation failed due to internet or download issue.
+        pause
+        exit /b 1
+    )
+    :: Un-comment the import site line in python311._pth so pip works
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "(Get-Content '%PYTHON_DIR%\\python311._pth') -replace '#import site', 'import site' | Set-Content '%PYTHON_DIR%\\python311._pth'"
+    
+    :: Download get-pip.py
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "try { Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile '%PYTHON_DIR%\\get-pip.py' -UseBasicParsing } catch { exit 1 }"
+    "%PYTHON_DIR%\\python.exe" "%PYTHON_DIR%\\get-pip.py" --no-warn-script-location >nul 2>nul
+    
+    set "PYTHON_EXE=%PYTHON_DIR%\\python.exe"
+)
 
 echo [1/5] Extracting embedded application files...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$marker = '::' + ' ' + '---AG_PAYLOAD_BEGIN---'; $all = [IO.File]::ReadAllText('%~f0'); $idx = $all.IndexOf($marker); if ($idx -lt 0) { exit 1 }; $b64 = $all.Substring($idx + $marker.Length).Trim(); $bytes = [Convert]::FromBase64String($b64); $zip = [IO.Path]::Combine($env:TEMP, 'ag_setup.zip'); [IO.File]::WriteAllBytes($zip, $bytes); Expand-Archive -Path $zip -DestinationPath '%INSTALL_DIR%' -Force; Remove-Item $zip -Force"
@@ -101,20 +115,20 @@ if %ERRORLEVEL% neq 0 (
 )
 
 echo [2/5] Installing terminal UI dependencies (rich, prompt_toolkit)...
-python -m pip install --quiet --disable-pip-version-check rich prompt_toolkit >nul 2>nul
+"%PYTHON_EXE%" -m pip install --quiet --disable-pip-version-check rich prompt_toolkit >nul 2>nul
 
 echo [3/5] Generating launcher scripts...
 set "LAUNCH_BAT=%BIN_DIR%\\launch-antigravity.bat"
 (
 echo @echo off
 echo set "PYTHONPATH=%INSTALL_DIR%\\src;%%PYTHONPATH%%"
-echo python -m ag_mode.cli.launcher %%*
+echo "%PYTHON_EXE%" -m ag_mode.cli.launcher %%*
 ) > "%LAUNCH_BAT%"
 
 (
 echo @echo off
 echo set "PYTHONPATH=%INSTALL_DIR%\\src;%%PYTHONPATH%%"
-echo python -m ag_mode.cli.main %%*
+echo "%PYTHON_EXE%" -m ag_mode.cli.main %%*
 ) > "%BIN_DIR%\\ag-mode.bat"
 
 (
@@ -122,15 +136,17 @@ echo @echo off
 echo "%BIN_DIR%\\ag-mode.bat" %%*
 ) > "%BIN_DIR%\\ag.bat"
 
+del /q "%BIN_DIR%\\*.ps1" 2>nul
+
 echo [4/5] Adding AG Mode Manager to permanent user PATH...
-powershell -NoProfile -Command "$bin = '%BIN_DIR%'; $userPath = [Environment]::GetEnvironmentVariable('Path', 'User'); if ($userPath -notlike '*' + $bin + '*') { [Environment]::SetEnvironmentVariable('Path', $userPath + ';' + $bin, 'User'); Write-Host '  OK PATH updated' }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$bin = '%BIN_DIR%'; $userPath = [Environment]::GetEnvironmentVariable('Path', 'User'); if ($userPath -notlike '*' + $bin + '*') { [Environment]::SetEnvironmentVariable('Path', $userPath + ';' + $bin, 'User'); Write-Host '  OK PATH updated' }"
 
 echo [5/5] Creating Desktop and AntiGravity integration shortcuts...
-powershell -NoProfile -Command "$sh = New-Object -ComObject WScript.Shell; $d = [Environment]::GetFolderPath('Desktop'); $sc = $sh.CreateShortcut($d + '\\AntiGravity (with AG Mode).lnk'); $sc.TargetPath = '%LAUNCH_BAT%'; $sc.Description = 'Launch AntiGravity with Mode Selector'; $agIco = (Get-ChildItem -Path $env:LOCALAPPDATA -Filter 'Antigravity IDE.exe' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; if ($agIco) { $sc.IconLocation = $agIco }; $sc.Save(); Write-Host '  OK Desktop shortcut created: AntiGravity (with AG Mode).lnk'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$sh = New-Object -ComObject WScript.Shell; $d = [Environment]::GetFolderPath('Desktop'); $sc = $sh.CreateShortcut($d + '\\AntiGravity (with AG Mode).lnk'); $sc.TargetPath = '%LAUNCH_BAT%'; $sc.Description = 'Launch AntiGravity with Mode Selector'; $agIco = (Get-ChildItem -Path $env:LOCALAPPDATA -Filter 'Antigravity IDE.exe' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; if ($agIco) { $sc.IconLocation = $agIco }; $sc.Save(); Write-Host '  OK Desktop shortcut created: AntiGravity (with AG Mode).lnk'"
 
 :: Initialize configuration and default modes
 set "PYTHONPATH=%INSTALL_DIR%\\src;%PYTHONPATH%"
-python -m ag_mode.installer.installer >nul 2>nul
+"%PYTHON_EXE%" -m ag_mode.installer.installer >nul 2>nul
 
 echo.
 echo +==================================================================+

@@ -1,0 +1,17 @@
+# Advanced Mobile and Web Threat Modeling Architecture
+
+## 1. The Anatomy of Application Threats
+Threat modeling is not a reactive security measure; it is the proactive architectural foundation of Application Security (pp-security). The AI must strictly employ structured threat modeling methodologies, such as STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) or PASTA (Process for Attack Simulation and Threat Analysis) before writing a single line of code.
+The AI must map every single data flow, trust boundary, and external dependency. In modern applications (both web and mobile), trust boundaries are highly porous. The device itself (whether a browser or a smartphone) must be treated as a hostile environment. Any data originating from the client, including HTTP headers, local storage, hidden form fields, or Intent extras, must be considered maliciously tampered with until cryptographically verified and strictly validated against an impenetrable backend schema.
+
+## 2. Web Application Attack Vectors
+For web environments, the AI must architect defenses against the OWASP Top 10 with extreme prejudice.
+- **Cross-Site Scripting (XSS):** The AI must enforce contextual output encoding. It is not enough to simply escape HTML; data must be encoded specifically for the context it is rendered in (JavaScript, CSS, HTML attributes). The AI must aggressively enforce strict Content Security Policies (CSP) to neutralize inline script execution entirely.
+- **Cross-Site Request Forgery (CSRF):** The AI must deploy a defense-in-depth strategy: SameSite=Strict attributes on all session cookies, combined with cryptographically secure, synchronizer token patterns (Anti-CSRF tokens) embedded in custom request headers, neutralizing automated cross-site requests.
+- **Server-Side Request Forgery (SSRF):** When an application fetches external resources (e.g., downloading a profile picture from a URL), the AI must architect strict egress network filtering. The backend must never be allowed to resolve internal IPs (127.0.0.1, 169.254.169.254 AWS metadata) or non-standard ports, preventing attackers from pivoting into the internal network.
+
+## 3. Mobile Application Attack Vectors
+Mobile security introduces entirely different paradigms. The mobile binary (APK/IPA) is in the attacker's hands and can be effortlessly reverse-engineered.
+- **Binary Reversing and Tampering:** The AI must implement root/jailbreak detection, emulator detection, and aggressive code obfuscation (e.g., ProGuard/R8 or DexGuard). While these are only speedbumps, they force attackers to expend significantly more resources.
+- **Insecure Data Storage:** The AI must assume the physical device will be stolen or compromised. Absolutely no sensitive data (PII, authentication tokens, cryptographic keys) may be stored in plaintext in SharedPreferences, UserDefaults, or SQLite databases. All local data must be encrypted using the OS-level keystore/keychain, utilizing hardware-backed security modules (TEE/Secure Enclave) to bind the encryption keys to the physical device biometrics.
+- **Inter-Process Communication (IPC):** On Android, exported components (Activities, Services, BroadcastReceivers) are massive attack vectors. The AI must ensure all components are unexported (ndroid:exported="false") unless strictly necessary, and if exported, they must validate incoming Intents with extreme prejudice to prevent permission escalation and data leakage.

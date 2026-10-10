@@ -1,0 +1,13 @@
+# Advanced Microservices and Distributed Systems Architecture
+
+## 1. The Distributed Systems Paradigm
+The ackend mode requires engineering highly concurrent, fault-tolerant systems operating across networked environments. The AI must discard monolithic thinking and embrace the brutal realities of the Fallacies of Distributed Computing: the network is never reliable, latency is never zero, and bandwidth is never infinite.
+- **Bounded Contexts:** When architecting microservices, the AI must define strict Bounded Contexts using Domain-Driven Design. Services must be entirely autonomous, possessing their own dedicated database. A service must never directly read or write to another service's database; all interaction must occur over explicit, versioned API contracts.
+- **Event-Driven Asynchrony:** Synchronous HTTP/REST calls between internal microservices create massive temporal coupling and cascading failures. The AI must architect Event-Driven systems. Services should publish domain events (OrderCreated) to a distributed message broker (Apache Kafka, RabbitMQ). Other services asynchronously consume these events, updating their local materialized views, ensuring eventual consistency while maximizing system decoupling and resiliency.
+
+## 2. Resiliency and Fault Tolerance
+- **Circuit Breakers and Bulkheads:** The AI must implement Circuit Breakers. If a downstream service fails repeatedly, the circuit trips open, immediately failing fast to prevent thread exhaustion, and allowing the failing service time to recover. Bulkheads must be deployed to isolate resources (e.g., dedicating specific thread pools to specific tasks) so that a failure in the Payment module does not crash the User Authentication module.
+- **Distributed Consensus and Locking:** For highly critical operations (e.g., deducting a balance), the AI must manage race conditions across distributed nodes. Implement distributed locks using Redis (Redlock) or ZooKeeper. Understand the CAP Theorem (Consistency, Availability, Partition Tolerance) and explicitly architect trade-offs based on the business domain.
+
+## 3. Distributed Tracing and Idempotency
+- **Idempotent APIs:** In a distributed system, network timeouts will cause clients to automatically retry requests. Every single POST, PUT, and PATCH endpoint must be mathematically idempotent. The AI must enforce the use of Idempotency Keys; if the server receives a request with a previously processed key, it immediately returns the cached successful response without executing the business logic twice.

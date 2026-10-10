@@ -69,12 +69,7 @@ def install(verbose: bool = True) -> Dict[str, Any]:
     with open(bat_file, "w", encoding="utf-8") as f:
         f.write(bat_content)
 
-    # Windows PowerShell launcher
-    ps1_file = bin_dir / "ag-mode.ps1"
-    ps1_content = f"""& "{python_exe}" -m ag_mode.cli.main $args
-"""
-    with open(ps1_file, "w", encoding="utf-8") as f:
-        f.write(ps1_content)
+
 
     # Unix shell launcher
     sh_file = bin_dir / "ag-mode"

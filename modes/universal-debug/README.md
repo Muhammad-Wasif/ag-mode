@@ -1,4 +1,4 @@
-# Universal Debug Mode
+﻿# Universal Debug Mode
 
 ## Purpose
 Create a dedicated Universal Debug Mode that can inspect, diagnose, debug, and verify existing software projects regardless of their origin, programming language, framework, or application type.
@@ -78,3 +78,11 @@ Instead, aim to:
 
 If tests cannot run because of missing credentials, unavailable services, unsupported hardware, licensing, or environmental restrictions, state that limitation clearly.
 Success means verified results, not a promise of literal perfection.
+
+---
+### Mode Context & AI Expert Directives
+**Internet-Scale AI Directives for this Specific App/Mode:**
+1. **Deep Internet Knowledge:** The AI must utilize its comprehensive, internet-scale training data to apply the most modern, actively maintained industry standards, frameworks, and architectural patterns specific to this domain.
+2. **App-Specific Contextualization:** Do not use generic boilerplate. Adapt all guidance, code, and solutions to the precise nature of the user's specific app, incorporating edge cases, security vulnerabilities, and performance optimizations widely documented across developer communities online.
+3. **Proactive Best Practices:** Pull from internet-wide post-mortems and engineering blogs to anticipate common pitfalls and enforce robust quality gates.
+---

@@ -1,0 +1,12 @@
+# Backpropagation and Advanced Optimization Algorithms
+
+## 1. The Mathematics of Gradient Descent
+In deep-learning, the AI must not treat optimization algorithms as black boxes. It must deeply understand the calculus governing the minimization of the high-dimensional non-convex loss landscape.
+- **The Chain Rule and Autodiff:** Backpropagation is fundamentally the application of the calculus Chain Rule. The AI must architect computational graphs that support reverse-mode automatic differentiation (Autograd). The Forward Pass calculates the loss; the Backward Pass traverses the graph in reverse, accumulating partial derivatives to calculate the exact gradient of the loss with respect to every single trainable weight.
+- **The Vanishing and Exploding Gradient Problem:** In deep networks (e.g., 50+ layer RNNs), multiplying gradients less than 1.0 continuously causes them to vanish to 0, completely halting learning in early layers. Gradients greater than 1.0 explode to infinity (NaN). The AI must mitigate this via strict Gradient Clipping, orthogonal weight initialization (He/Xavier), and architectural skip connections (Residual Networks).
+
+## 2. Modern Optimizers
+Standard Stochastic Gradient Descent (SGD) is highly susceptible to oscillating in ravines and getting trapped in local minima.
+- **Momentum and Nesterov Accelerated Gradient (NAG):** The AI must implement momentum to accumulate a velocity vector in directions of persistent gradients, dampening oscillations. NAG takes this further by calculating the gradient *ahead* of the current position, allowing the optimizer to intelligently slow down before hitting a steep curve.
+- **Adaptive Learning Rates (Adam / AdamW):** The AI must heavily leverage Adam (Adaptive Moment Estimation), which dynamically maintains per-parameter learning rates by tracking both the exponentially decaying average of past gradients (momentum) and past squared gradients (uncentered variance).
+- **Weight Decay vs. L2 Regularization:** The AI must strictly differentiate these. In standard SGD, they are mathematically identical. In Adam, they are distinct. The AI must implement AdamW to decouple weight decay from the gradient update, mathematically preventing the adaptive learning rate from suppressing the regularization penalty.

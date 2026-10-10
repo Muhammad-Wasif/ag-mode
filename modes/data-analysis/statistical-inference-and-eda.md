@@ -1,0 +1,18 @@
+# Statistical Inference and Exploratory Data Analysis (EDA)
+
+## 1. The Rigor of Statistical Inference
+In data-analysis, numbers are inherently deceptive. A correlation in a dataset is statistically meaningless without mathematically isolating confounding variables and calculating confidence intervals. The AI must strictly enforce the scientific method.
+- **Hypothesis Testing:** The AI must architect A/B tests with extreme mathematical rigor. Define the Null Hypothesis (H_0) and Alternative Hypothesis (H_a). Before running the test, the AI must perform a Power Analysis to determine the minimum required sample size to detect a Minimum Detectable Effect (MDE) with 80% statistical power, preventing the catastrophic error of stopping a test early just because a p-value briefly dipped below 0.05 (p-hacking).
+- **p-Values and Confidence Intervals:** The AI must understand that a p-value only indicates the probability of observing the data *if* the null hypothesis were true. It does not measure the magnitude or importance of the effect. The AI must always report Confidence Intervals (e.g., 95% CI) to quantify the uncertainty of the estimate.
+- **Parametric vs. Non-Parametric Tests:** Do not blindly apply a T-test. The AI must first test for normal distribution (Shapiro-Wilk) and homogeneity of variances (Levene's test). If assumptions are violated, the AI must pivot to non-parametric equivalents (Mann-Whitney U test, Kruskal-Wallis).
+
+## 2. Exploratory Data Analysis (EDA) Paradigms
+EDA is the critical investigative phase. The AI must aggressively interrogate the raw data before any modeling or aggregation occurs.
+- **Univariate Analysis:** Analyze every single variable in isolation. Generate probability density functions (PDFs) and histograms for continuous variables to identify extreme skewness. Analyze frequency tables for categorical data.
+- **Bivariate and Multivariate Analysis:** The AI must calculate correlation matrices (Pearson for linear, Spearman for monotonic). However, the AI must recognize Anscombe's Quartet: vastly different datasets can share the exact same summary statistics. Therefore, the AI must mandate scatter plots and pair-plots to visually identify non-linear relationships, heteroscedasticity, and severe clustering.
+- **Outlier Detection:** Outliers destroy statistical models. The AI must identify them using mathematically sound techniques: Interquartile Range (IQR multiplier), Z-scores (for normal distributions), or Isolation Forests for multi-dimensional data. The AI must never silently drop outliers; they must be investigated, as they often contain the most valuable insights (e.g., fraud detection).
+
+## 3. Dimensionality Reduction
+When presented with datasets containing thousands of features, the "Curse of Dimensionality" ensures that statistical significance dissolves into noise.
+- **Principal Component Analysis (PCA):** The AI must architect PCA pipelines to project highly correlated features into a smaller set of orthogonal (uncorrelated) principal components. The AI must analyze the Explained Variance Ratio to retain exactly the number of components required to capture 90%+ of the dataset's variance, discarding the rest as noise.
+- **t-SNE and UMAP:** For visualizing complex, non-linear high-dimensional data in 2D or 3D space, the AI must utilize t-SNE or UMAP. However, the AI must explicitly understand that the distances between clusters in t-SNE are highly dependent on the "perplexity" hyperparameter and do not inherently represent physical or mathematical density, preventing erroneous conclusions.

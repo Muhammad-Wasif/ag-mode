@@ -1,5 +1,5 @@
-{
-    "version":  "1.0.0",
+﻿{
+    "version":  "2.2.0",
     "modes":  [
                   {
                       "id":  "web",
@@ -2361,6 +2361,98 @@
                       "directory":  "comprehensive-report",
                       "files":  [
                                     "README.md"
+                                ]
+                  },
+                  {
+                      "id":  "cisco-packet-tracer",
+                      "name":  "Cisco Packet Tracer",
+                      "category":  "Academic \u0026 Study",
+                      "description":  "Network design, configuration, simulation and topology troubleshooting in Cisco Packet Tracer.",
+                      "version":  "1.0.0",
+                      "dependencies":  [
+
+                                       ],
+                      "tags":  [
+                                   "cisco",
+                                   "packet tracer",
+                                   "networking",
+                                   "simulation"
+                               ],
+                      "directory":  "cisco-packet-tracer",
+                      "files":  [
+                                    "README.md",
+                                    "core.md",
+                                    "quality-gate.md",
+                                    "tools.md"
+                                ]
+                  },
+                  {
+                      "id":  "uet-project",
+                      "name":  "UET Project",
+                      "category":  "Research \u0026 Project Design",
+                      "description":  "University project planning and implementation aligned to UET Lahore course rubrics, technical constraints and demonstrable deliverables.",
+                      "version":  "1.0.0",
+                      "dependencies":  [
+
+                                       ],
+                      "tags":  [
+                                   "uet",
+                                   "university",
+                                   "project",
+                                   "academic"
+                               ],
+                      "directory":  "uet-project",
+                      "files":  [
+                                    "README.md",
+                                    "core.md",
+                                    "quality-gate.md",
+                                    "tools.md"
+                                ]
+                  },
+                  {
+                      "id":  "mathematica",
+                      "name":  "Mathematica",
+                      "category":  "Academic \u0026 Study",
+                      "description":  "Symbolic computation, notebook development, derivation and algorithm design in Wolfram Mathematica.",
+                      "version":  "1.0.0",
+                      "dependencies":  [
+
+                                       ],
+                      "tags":  [
+                                   "mathematica",
+                                   "wolfram",
+                                   "math",
+                                   "symbolic"
+                               ],
+                      "directory":  "mathematica",
+                      "files":  [
+                                    "README.md",
+                                    "core.md",
+                                    "quality-gate.md",
+                                    "tools.md"
+                                ]
+                  },
+                  {
+                      "id":  "maple",
+                      "name":  "Maple",
+                      "category":  "Academic \u0026 Study",
+                      "description":  "Symbolic and numerical mathematics, derivations, plots and reproducible Maple worksheets.",
+                      "version":  "1.0.0",
+                      "dependencies":  [
+
+                                       ],
+                      "tags":  [
+                                   "maple",
+                                   "math",
+                                   "symbolic",
+                                   "calculus"
+                               ],
+                      "directory":  "maple",
+                      "files":  [
+                                    "README.md",
+                                    "core.md",
+                                    "quality-gate.md",
+                                    "tools.md"
                                 ]
                   }
               ]

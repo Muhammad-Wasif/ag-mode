@@ -15,6 +15,6 @@ if sys.platform == "win32":
         except Exception:
             pass
 
-__version__ = "0.1.0"
+__version__ = "2.2.0"
 __app_name__ = "AG Mode Manager"
 __author__ = "AntiGravity Engineering"

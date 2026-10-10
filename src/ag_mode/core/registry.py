@@ -16,10 +16,14 @@ from ag_mode.diagnostics.logger import logger
 
 
 CATEGORIES: List[str] = [
-    "Development",
+    "Web Development",
+    "Mobile Development",
+    "Desktop Development",
+    "Cloud & DevOps",
+    "Systems & Hardware",
+    "Software Engineering",
     "Data & AI",
     "Cybersecurity",
-    "Computer & Engineering",
     "Academic & Study",
     "Languages & Writing",
     "Research",
